@@ -7,31 +7,12 @@ char *argv0;
 #include "arg.h"
 #include "stb_image.h"
 
-#define HISTOGRAM_CAP	16
+#define HISTOGRAM_CAP	256
 
 typedef struct {
 	uint32_t color;
 	size_t count;
 } ColorFreq;
-
-ColorFreq histogram[HISTOGRAM_CAP];
-size_t histogram_sz = 0;
-
-static void
-histogram_add(uint32_t color)
-{
-	for (size_t i = 0; i < histogram_sz; i++) {
-		if (histogram[i].color == color) {
-			histogram[i].count++;
-			return;
-		}
-	}
-
-	assert(histogram_sz < HISTOGRAM_CAP);
-	histogram[histogram_sz].color = color;
-	histogram[histogram_sz].count = 1;
-	histogram_sz += 1;
-}
 
 static void
 usage(void)
@@ -39,6 +20,23 @@ usage(void)
 	fprintf(stderr, "usage: wast [image]\n");
 	exit(1);
 }
+size_t size = 0;
+
+static void
+addcolor(ColorFreq *hist, uint32_t color)
+{
+	for (size_t i = 0; i < size; i++) {
+		if (hist[i].color == color) {
+			hist[i].count++;
+			return;
+		}
+	}
+
+	hist[size].color = color;
+	hist[size].count = 1;
+	size++;
+}
+
 
 int
 main(int argc, char *argv[])
@@ -63,17 +61,15 @@ main(int argc, char *argv[])
 		exit(1);
 	}
 
-	//printf("Image: %s\n", argv[0]);
-	//printf("Size: %dx%d\n", x, y);
+	int imgsz = x * y; //image size
+	ColorFreq hist[imgsz]; //array of the size of the image
 
-
-	//for (int i = 0; i < x * y; i++) {
-	for (int i = 0; i < 100; i++) {
-		histogram_add(data[i]);
+	for (size_t i = 0; i < imgsz; i++) { //look up pixel by pixel
+		addcolor(hist, data[i]);
 	}
 
-	for (size_t i = 0; i < histogram_sz; i++) {
-		printf("%08X: %zu\n", histogram[i].color, histogram[i].count);
+	for (size_t i = 0; i < size; i++) { //outputs the result
+		printf("%06X: %zu\n", (hist[i].color & 0x00ffffff), hist[i].count);
 	}
 
 	stbi_image_free(data);
