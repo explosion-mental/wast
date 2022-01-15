@@ -69,7 +69,7 @@ main(int argc, char *argv[])
 	}
 
 	for (size_t i = 0; i < size; i++) { //outputs the result
-		printf("%06X: %zu\n", (hist[i].color & 0x00ffffff), hist[i].count);
+		printf("#%06X: %zu\n", (hist[i].color & 0x00ffffff), hist[i].count);
 	}
 
 	stbi_image_free(data);
