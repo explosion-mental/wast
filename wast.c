@@ -62,7 +62,7 @@ main(int argc, char *argv[])
 	}
 
 	int imgsz = x * y; //image size
-	ColorFreq hist[imgsz]; //array of the size of the image
+	ColorFreq hist[imgsz/10]; //array of the size of the image
 
 	for (size_t i = 0; i < imgsz; i++) { //look up pixel by pixel
 		addcolor(hist, data[i]);
