@@ -61,7 +61,7 @@ addcolor(ColorFreq *hist, uint32_t color)
 int
 main(int argc, char *argv[])
 {
-	int x, y;
+	int w, h;
 	uint32_t *data;
 
 	ARGBEGIN {
@@ -76,12 +76,12 @@ main(int argc, char *argv[])
 	if (!argv[0])
 		usage();
 
-	if ((data = ((uint32_t *)stbi_load(argv[0], &x, &y, NULL, 4))) == NULL) {
+	if ((data = ((uint32_t *)stbi_load(argv[0], &w, &h, NULL, 4))) == NULL) {
 		fprintf(stderr, "Could not read file %s\n", argv[0]);
 		exit(1);
 	}
 
-	int imgsz = x * y; //image size
+	int imgsz = w * h; //image size
 	ColorFreq hist[imgsz/10]; //array of the size of the image
 
 	//descending sort, firsts on the array will be the most prominent
