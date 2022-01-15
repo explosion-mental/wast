@@ -23,6 +23,26 @@ usage(void)
 size_t size = 0;
 
 static void
+order(ColorFreq *hist, int imgsz)
+{
+	size_t a; //count
+	uint32_t b; //col
+
+	for (int i = 0; i < imgsz; i++)  {
+		for (int j = i + 1; j < imgsz; j++) {
+			if (hist[i].count < hist[j].count) {
+				a = hist[i].count;
+				b = hist[i].color;
+				hist[i].count = hist[j].count;
+				hist[i].color = hist[j].color;
+				hist[j].count = a;
+				hist[j].color = b;
+			}
+		}
+	}
+}
+
+static void
 addcolor(ColorFreq *hist, uint32_t color)
 {
 	for (size_t i = 0; i < size; i++) {
@@ -64,11 +84,15 @@ main(int argc, char *argv[])
 	int imgsz = x * y; //image size
 	ColorFreq hist[imgsz/10]; //array of the size of the image
 
+	//descending sort, firsts on the array will be the most prominent
+	//colors (the ones with the most counts)
+	order(hist, imgsz);
+
 	for (size_t i = 0; i < imgsz; i++) { //look up pixel by pixel
 		addcolor(hist, data[i]);
 	}
 
-	for (size_t i = 0; i < size; i++) { //outputs the result
+	for (size_t i = 0; i < 10; i++) { //outputs the result
 		printf("#%06X: %zu\n", (hist[i].color & 0x00ffffff), hist[i].count);
 	}
 
