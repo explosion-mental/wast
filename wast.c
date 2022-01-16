@@ -93,6 +93,7 @@ load(const char *fname, int *width, int *height)
 	unsigned char *resized = (unsigned char *)malloc(x * y * channels);
 
 	stbir_resize_uint8((unsigned char *)image, w, h, 0, resized, x, y, 0, 4);
+	stbi_image_free(image);
 
 	*width = x;
 	*height = y;
@@ -133,6 +134,8 @@ main(int argc, char *argv[])
 	for (size_t i = 0; i < size; i++) { //outputs the result
 		printf("#%06X: %zu\n", hist[i].color & 0x00ffffff, hist[i].count);
 	}
+
+	stbi_image_free(image);
 
 	return 0;
 }
