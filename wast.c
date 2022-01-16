@@ -1,9 +1,10 @@
+/* See LICENSE file for copyright and license details. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <assert.h>
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STBI_ASSERT(x)
 char *argv0;
 #include "arg.h"
 #include "stb_image.h"
