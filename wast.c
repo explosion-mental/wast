@@ -122,13 +122,14 @@ main(int argc, char *argv[])
 
 	//descending sort, firsts on the array will be the most prominent
 	//colors (the ones with the most counts)
-	order(hist, imgsz);
+	//order(hist, imgsz);
+	//TODO sorting adds 1-2 seconds tho..
 
 	for (size_t i = 0; i < imgsz; i++) { //look up pixel by pixel
 		addcolor(hist, image[i]);
 	}
 
-	for (size_t i = 0; i < 10; i++) { //outputs the result
+	for (size_t i = 0; i < size; i++) { //outputs the result
 		printf("#%06X: %zu\n", hist[i].color & 0x00ffffff, hist[i].count);
 	}
 
