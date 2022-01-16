@@ -3,11 +3,13 @@
 #include <stdint.h>
 #include <assert.h>
 
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
 char *argv0;
 #include "arg.h"
 #include "stb_image.h"
+#include "stb_image_resize.h"
 
-#define HISTOGRAM_CAP	256
+#define IMGRZ	512
 
 typedef struct {
 	uint32_t color;
@@ -57,12 +59,51 @@ addcolor(ColorFreq *hist, uint32_t color)
 	size++;
 }
 
+static uint32_t *
+load(const char *fname, int *width, int *height)
+{
+	uint32_t *image;
+	const int channels = 4;	//always force 4 channels (RGBA)
+	int w, h;
+
+	if ((image = (uint32_t *)stbi_load(fname, &w, &h, NULL, channels)) == NULL) {
+		fprintf(stderr, "Could not read file %s\n", fname);
+		exit(1);
+	}
+
+	*width = w;
+	*height = h;
+
+	if (w <= IMGRZ || h <= IMGRZ) /* if the image is small enough */
+		return image;
+
+	float max;
+
+	/* resize align to the longest side */
+	if (w == h)
+		max = w;
+	else if (w > h)
+		max = w;
+	else if (h > w)
+		max = h;
+
+	int x = w * (512 / max);
+	int y = h * (512 / max);
+
+	unsigned char *resized = (unsigned char *)malloc(x * y * channels);
+
+	stbir_resize_uint8((unsigned char *)image, w, h, 0, resized, x, y, 0, 4);
+
+	*width = x;
+	*height = y;
+
+	return (uint32_t *)resized;
+}
 
 int
 main(int argc, char *argv[])
 {
 	int w, h;
-	uint32_t *data;
 
 	ARGBEGIN {
 	case 'v':
@@ -76,27 +117,21 @@ main(int argc, char *argv[])
 	if (!argv[0])
 		usage();
 
-	if ((data = ((uint32_t *)stbi_load(argv[0], &w, &h, NULL, 4))) == NULL) {
-		fprintf(stderr, "Could not read file %s\n", argv[0]);
-		exit(1);
-	}
-
+	uint32_t *image = load(argv[0], &w, &h);
 	int imgsz = w * h; //image size
-	ColorFreq hist[imgsz/10]; //array of the size of the image
+	ColorFreq hist[imgsz]; //array of the size of the image
 
 	//descending sort, firsts on the array will be the most prominent
 	//colors (the ones with the most counts)
 	order(hist, imgsz);
 
 	for (size_t i = 0; i < imgsz; i++) { //look up pixel by pixel
-		addcolor(hist, data[i]);
+		addcolor(hist, image[i]);
 	}
 
 	for (size_t i = 0; i < 10; i++) { //outputs the result
-		printf("#%06X: %zu\n", (hist[i].color & 0x00ffffff), hist[i].count);
+		printf("#%06X: %zu\n", hist[i].color & 0x00ffffff, hist[i].count);
 	}
-
-	stbi_image_free(data);
 
 	return 0;
 }
