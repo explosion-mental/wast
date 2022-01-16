@@ -8,8 +8,7 @@ char *argv0;
 #include "arg.h"
 #include "stb_image.h"
 #include "stb_image_resize.h"
-
-#define IMGRZ	512
+#include "config.h"
 
 typedef struct {
 	uint32_t color;
@@ -74,10 +73,10 @@ load(const char *fname, int *width, int *height)
 	*width = w;
 	*height = h;
 
-	if (w <= IMGRZ || h <= IMGRZ) /* if the image is small enough */
+	if (w <= maxsize || h <= maxsize) /* if the image is small enough */
 		return image;
 
-	float max;
+	float max = 0;
 
 	/* resize align to the longest side */
 	if (w == h)

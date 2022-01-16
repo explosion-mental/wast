@@ -1,57 +1,22 @@
 .TH wast 1 wast\-VERSION
 .SH NAME
-wast \- simple auto cpu frequencer
+wast \- wall fast
 .SH SYNOPSIS
 .B wast
-.RB [ \-blrtTv ]
-.RB [ \-g
-.IR governor ]
+.RB [ \-v ]
+.RI [ image ]
 .P
 .SH DESCRIPTION
 .B wast
-is a simple auto cpu frequencer that only changes two things: the governor and
-turbo boost state; depending on the cpu load, system load and the temperature.
-Machines that have a battery and most of the time depend on it are the target,
-turbo boost state; depending on the cpu load, system load and the temperature.
-turbo boost state; depending on the cpu load, system load and the temperature.
-Machines that have a battery and most of the time depend on it are the target,
-but since it reduces the power consumption in general it can be beneficial
-anyway, in theory. It needs root access to write to the system filesystem.
-Machines that have a battery and most of the time depend on it are the target,
-but since it reduces the power consumption in general it can be beneficial
-anyway, in theory. It needs root access to write to the system filesystem.
-but since it reduces the power consumption in general it can be beneficial
-anyway, in theory. It needs root access to write to the system filesystem.
+reads an image and outputs all the 'relevant' colors that are found. You may
+find out that the colors outputed are not 'all' the colors on the image. This
+is because if the image is larger than 'maxsize' (default 512) it will resize
+the image making the execution time much faster (since we have less pixel to
+look for) and removes colors that are not repeated that much ('irrelevant
+colors').
 .P
 .SH OPTIONS
-.BR \-b ", " \-\-daemon
-daemonize process, forks into the background.
-.TP
-.BI \-g " governor"
-sets the governor of all cpus to governor, then exits.
-.TP
-.BI \-g " governor"
-sets the governor of all cpus to governor, then exits.
-.TP
-.BI \-g " governor"
-sets the governor of all cpus to governor, then exits.
-.TP
-.BI \-g " governor"
-sets the governor of all cpus to governor, then exits.
-.TP
-.B \-l
-prints the system info that wast uses, then exits.
-.TP
-.B \-r
-runs once, then exits (doesn't run forever).
-.TP
-.B \-t
-enables turbo boost, then exits.
-.TP
-.B \-T
-disbles turbo boost, then exits.
-.TP
 .B \-v
 prints version information to stdout, then exits.
 .SH SEE ALSO
-.IR auto-cpufreq (1),
+.IR wal
